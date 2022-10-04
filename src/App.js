@@ -13,14 +13,14 @@ function App() {
       title: "To Do 1",
       description: "Do this thing",
       author: "Kevin",
-      dateCreated:  Date(Date.now()),
+      dateCreated:  new Date(Date.now()).toLocaleString()
     },
     {
       id: uuidv4(),
       title: "To Do 2",
       description: "Do this other thing",
       author: "Kevin",
-      dateCreated:  Date(Date.now()),
+      dateCreated:  new Date(Date.now()).toLocaleString()
     }
   ]
 

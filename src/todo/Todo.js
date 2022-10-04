@@ -1,21 +1,19 @@
 import { useState } from 'react'
 
 export default 
-//function Todo ({ title, description, author, dateCreated, complete, dateCompleted }) {
 function Todo ({ id, title, description, author, dateCreated }) {
 
     const [ complete, setComplete ] = useState(false)
     const [ dateCompleted, setDateCompleted ] = useState('')
+
     function handleComplete (evt) { 
         setComplete(evt.target.checked);
-        handleDateCompleted(evt.target.checked);
-    }
-    function handleDateCompleted (check) { 
-        if(check) {
-            setDateCompleted(Date(Date.now())) 
+
+        if(evt.target.checked) {
+            setDateCompleted(new Date(Date.now()).toLocaleString());
         }
         else {
-            setDateCompleted('') 
+            setDateCompleted('');
         }
     }
 
@@ -30,5 +28,3 @@ function Todo ({ id, title, description, author, dateCreated }) {
         </div>
     )
 }
-
-//Completed? <input type="checkbox" checked={complete} onClick={handleComplete} id="complete" name="complete"></input> Date Completed: {dateCompleted}

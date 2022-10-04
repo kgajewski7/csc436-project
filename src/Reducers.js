@@ -18,9 +18,7 @@ function userReducer(state, action) {
           title: action.title,
           description: action.description,
           author: action.author,
-          dateCreated: action.dateCreated,
-          complete: action.complete,
-          dateCompleted: action.dateCompleted
+          dateCreated: action.dateCreated
         };
         return [newTodo, ...state];
       default:

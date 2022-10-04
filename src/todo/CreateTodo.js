@@ -16,9 +16,7 @@ function CreateTodo ({user, todos, dispatch}) {
             title, 
             description, 
             author: user,
-            dateCreated:  Date(Date.now()), 
-            //complete: false, 
-            //dateCompleted: ''
+            dateCreated:  new Date(Date.now()).toLocaleString()
         })
     }
 
