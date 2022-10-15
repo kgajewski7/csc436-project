@@ -1,9 +1,11 @@
 import React, { useReducer } from "react";
 import { v4 as uuidv4 } from "uuid";
+
 import UserBar from './user/UserBar';
 import TodoList from './todo/TodoList';
 import CreateTodo from './todo/CreateTodo';
 import appReducer from "./Reducers";
+import { StateContext } from "./contexts/StateContext";
 
 function App() {
 
@@ -28,9 +30,13 @@ function App() {
 
   return (
     <div>
-      <UserBar user={state.user} dispatch={dispatch}/>
-      <TodoList todos={state.todos} dispatch={dispatch}/>
-      {state.user && <CreateTodo user={state.user} dispatch={dispatch}/>}
+      <StateContext.Provider value={{ state, dispatch }}>
+        <UserBar />
+        {state.user && <CreateTodo />}
+        <br />
+        <hr />
+        <TodoList />
+      </StateContext.Provider>
     </div>
   )
 }

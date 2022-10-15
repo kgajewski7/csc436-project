@@ -1,10 +1,15 @@
-import Todo from './Todo'
+import { useContext } from 'react';
+
+import Todo from './Todo';
+import { StateContext } from "../contexts/StateContext";
 
 export default 
-function TodoList ({todos, dispatch}) {
+function TodoList () {
+    const { state } = useContext(StateContext);
+    const { todos } = state;
     return (
         <div>
-            {todos.map((t, i) => <Todo {...t} dispatch={dispatch} key={t.id} />)}
+            {todos.map((t, i) => <Todo {...t} key={t.id} />)}
         </div>
     )
 }
