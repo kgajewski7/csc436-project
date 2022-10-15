@@ -1,10 +1,10 @@
 import Todo from './Todo'
 
 export default 
-function TodoList ({todos = []}) {
+function TodoList ({todos, dispatch}) {
     return (
         <div>
-            {todos.map((t, i) => <Todo {...t} key={t.id} />)}
+            {todos.map((t, i) => <Todo {...t} dispatch={dispatch} key={t.id} />)}
         </div>
     )
 }

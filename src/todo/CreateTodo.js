@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { v4 as uuidv4 } from "uuid";
 
 export default 
-function CreateTodo ({user, todos, dispatch}) {
+function CreateTodo ({user, dispatch}) {
 
     const [ title, setTitle ] = useState('')
     const [ description, setDescription ] = useState('')
@@ -16,14 +16,16 @@ function CreateTodo ({user, todos, dispatch}) {
             title, 
             description, 
             author: user,
-            dateCreated:  new Date(Date.now()).toLocaleString()
+            dateCreated:  new Date(Date.now()).toLocaleString(),
+            complete: false,
+            dateCompleted: ''
         })
     }
 
     return (
         <form onSubmit={e => {
-            e.preventDefault(); 
-            handleCreate()
+                e.preventDefault(); 
+                handleCreate();
             }}>
             <div>Author: <b>{user}</b></div>
             <div>
