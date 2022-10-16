@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import Accordion from 'react-bootstrap/Accordion';
 
 import Todo from './Todo';
 import { StateContext } from "../contexts/StateContext";
@@ -8,8 +9,8 @@ function TodoList () {
     const { state } = useContext(StateContext);
     const { todos } = state;
     return (
-        <div>
+        <Accordion alwaysOpen>
             {todos.map((t, i) => <Todo {...t} key={t.id} />)}
-        </div>
+        </Accordion>
     )
 }

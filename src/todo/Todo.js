@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { v4 as uuidv4 } from "uuid";
+import Accordion from 'react-bootstrap/Accordion';
 
 import { StateContext } from "../contexts/StateContext";
 
@@ -38,22 +39,24 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
     }
 
     return (
-        <div>
-            <h3>{title}</h3>
-            <div>{description}</div>
-            <br />
-            <i>Created by <b>{author}</b> on {dateCreated}</i>
-            <br />
-            Completed? <input type="checkbox" checked={complete} onChange={handleComplete} id="complete" name="complete"></input> Date Completed: {dateCompleted}
-            <br />
-            <div>
-                <form onSubmit={e => {e.preventDefault(); handleDuplicate();}} style={{display: 'inline'}}>
-                    <input type="submit" value="Duplicate" style={{display: 'inline'}} disabled={!state.user}/>
-                </form>
-                <form onSubmit={e => {e.preventDefault(); handleDelete();}} style={{display: 'inline'}}>
-                    <input type="submit" value="Delete" style={{display: 'inline'}}/>
-                </form>
-            </div>
-        </div>
+        <Accordion.Item eventKey={id}>
+            <Accordion.Header>{title}</Accordion.Header>
+            <Accordion.Body>
+                <div>{description}</div>
+                <br />
+                <i>Created by <b>{author}</b> on {dateCreated}</i>
+                <br />
+                Completed? <input type="checkbox" checked={complete} onChange={handleComplete} id="complete" name="complete"></input> Date Completed: {dateCompleted}
+                <br />
+                <div>
+                    <form onSubmit={e => {e.preventDefault(); handleDuplicate();}} style={{display: 'inline'}}>
+                        <input type="submit" value="Duplicate" style={{display: 'inline'}} disabled={!state.user}/>
+                    </form>
+                    <form onSubmit={e => {e.preventDefault(); handleDelete();}} style={{display: 'inline'}}>
+                        <input type="submit" value="Delete" style={{display: 'inline'}}/>
+                    </form>
+                </div>
+            </Accordion.Body>
+        </Accordion.Item>
     )
 }
