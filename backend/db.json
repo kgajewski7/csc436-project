@@ -1,9 +1,23 @@
 {
-    "todos": [
-
-    ],
-    "users":[
-
-    ]
+  "todos": [
+    {
+      "id": "22f8214c-5402-4db3-a419-6350b51bd7b3",
+      "title": "To Do 1",
+      "description": "To this thing",
+      "author": "Kevin",
+      "dateCreated": "10/29/2022, 4:43:23 PM",
+      "complete": false,
+      "dateCompleted": ""
+    },
+    {
+      "id": "919e5903-81ce-4ef2-8b7f-fc3040dd37ba",
+      "title": "To Do 2",
+      "description": "Do this other thing",
+      "author": "Kevin",
+      "dateCreated": "10/29/2022, 4:43:56 PM",
+      "complete": false,
+      "dateCompleted": ""
+    }
+  ],
+  "users": []
 }
-    

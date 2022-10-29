@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react'
 import { v4 as uuidv4 } from "uuid";
+import { useResource } from "react-request-hook"
 
 import { StateContext } from "../contexts/StateContext";
 
@@ -12,19 +13,36 @@ function CreateTodo () {
     const [ title, setTitle ] = useState('')
     const [ description, setDescription ] = useState('')
 
+    const [todo , createTodo ] = useResource(({ id, title, description, author, dateCreated, complete, dateCompleted }) => ({
+        url: '/todos',
+        method: 'post',
+        data: { id, title, description, author, dateCreated, complete, dateCompleted }
+    }))
+
     function handleTitle (evt) { setTitle(evt.target.value) }
     function handleDescription (evt) { setDescription(evt.target.value) }
     function handleCreate () {
-        dispatch({ 
-            type: 'CREATE_TODO', 
-            id: uuidv4(),
+        const i = uuidv4();
+        const d = new Date(Date.now()).toLocaleString();
+        createTodo({ 
+            id: i,
             title, 
             description, 
             author: user,
-            dateCreated:  new Date(Date.now()).toLocaleString(),
+            dateCreated:  d,
             complete: false,
             dateCompleted: ''
-        })
+        });
+        dispatch({ 
+            type: 'CREATE_TODO', 
+            id: i,
+            title, 
+            description, 
+            author: user,
+            dateCreated:  d,
+            complete: false,
+            dateCompleted: ''
+        });
     }
 
     return (

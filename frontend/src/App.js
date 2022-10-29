@@ -1,5 +1,5 @@
-import React, { useReducer } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useReducer, useEffect } from "react";
+import { useResource } from 'react-request-hook'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import UserBar from './user/UserBar';
@@ -10,28 +10,20 @@ import { StateContext } from "./contexts/StateContext";
 
 function App() {
 
-  const initialTodos = [
-    {
-      id: uuidv4(),
-      title: "To Do 1",
-      description: "Do this thing",
-      author: "Kevin",
-      dateCreated:  new Date(Date.now()).toLocaleString(),
-      complete: false,
-      dateCompleted: ''
-    },
-    {
-      id: uuidv4(),
-      title: "To Do 2",
-      description: "Do this other thing",
-      author: "Kevin",
-      dateCreated:  new Date(Date.now()).toLocaleString(),
-      complete: false,
-      dateCompleted: ''
-    }
-  ]
+  const [ state, dispatch ] = useReducer(appReducer, { user: '', todos: [] })
 
-  const [ state, dispatch ] = useReducer(appReducer, { user: '', todos: initialTodos })
+  const [ todos, getTodos ] = useResource(() => ({
+    url: '/todos',
+    method: 'get'
+  }))
+
+  useEffect(getTodos, [])
+
+  useEffect(() => {
+    if (todos && todos.data) {
+      dispatch({ type: 'FETCH_TODOS', todos: todos.data.reverse() })
+    }
+  }, [todos])
 
   return (
     <div>
