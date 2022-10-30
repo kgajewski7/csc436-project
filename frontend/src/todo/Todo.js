@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { v4 as uuidv4 } from "uuid";
+import { useResource } from 'react-request-hook';
 import Accordion from 'react-bootstrap/Accordion';
 
 import { StateContext } from "../contexts/StateContext";
@@ -9,33 +10,70 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
 
     const { state, dispatch } = useContext(StateContext);
 
+    const [ dupTodo , duplicateTodo ] = useResource(({ id, title, description, author, dateCreated, complete, dateCompleted }) => ({
+        url: '/todos',
+        method: 'post',
+        data: { id, title, description, author, dateCreated, complete, dateCompleted }
+    }))
+
+    const [ delTodo , deleteTodo ] = useResource(({ id }) => ({
+        url: `/todos/${id}`,
+        method: 'delete'
+    }))
+
+    const [ compTodo , completeTodo ] = useResource(({ id, complete, dateCompleted }) => ({
+        url: `/todos/${id}`,
+        method: 'patch',
+        data: { complete, dateCompleted }
+    }))
+
     function handleComplete () {
+        const d = (!complete===true ? new Date(Date.now()).toLocaleString() : '');
+        completeTodo({
+            id,
+            complete: !complete,
+            dateCompleted: d
+        });
         dispatch({ 
             type: 'TOGGLE_TODO', 
             id,
             complete: !complete,
-            dateCompleted: (!complete===true ? new Date(Date.now()).toLocaleString() : '')
-        })
+            dateCompleted: d
+        });
     }
 
     function handleDuplicate () {
+        const i = uuidv4();
+        const d = new Date(Date.now()).toLocaleString();
+        duplicateTodo({ 
+            id: i,
+            title: title.concat(' ','(copy)'),  
+            description, 
+            author: state.user,
+            dateCreated:  d,
+            complete: false,
+            dateCompleted: ''
+        });
         dispatch({ 
             type: 'CREATE_TODO', 
-            id: uuidv4(),
+            id: i,
             title: title.concat(' ','(copy)'), 
             description, 
             author: state.user,
-            dateCreated:  new Date(Date.now()).toLocaleString(),
+            dateCreated:  d,
             complete: false,
             dateCompleted: ''
-        })
+        });
     }
 
     function handleDelete () {
+        deleteTodo({
+            id
+        });
         dispatch({ 
             type: 'DELETE_TODO', 
             id
-        })
+        });
     }
 
     return (

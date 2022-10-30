@@ -1,23 +1,52 @@
 {
   "todos": [
     {
-      "id": "22f8214c-5402-4db3-a419-6350b51bd7b3",
-      "title": "To Do 1",
-      "description": "To this thing",
-      "author": "Kevin",
-      "dateCreated": "10/29/2022, 4:43:23 PM",
+      "id": "0f67da15-30e6-41b6-be1b-a767ace319c3",
+      "title": "To Do 3",
+      "description": "Test 3",
+      "author": "kevin@test.test",
+      "dateCreated": "10/30/2022, 1:17:10 PM",
+      "complete": true,
+      "dateCompleted": "10/30/2022, 2:14:58 PM"
+    },
+    {
+      "id": "b8e1b910-d30d-4132-b62d-f325a2f2732a",
+      "title": "John's To Do 1",
+      "description": "Do this thing",
+      "author": "john@test.test",
+      "dateCreated": "10/30/2022, 2:14:14 PM",
       "complete": false,
       "dateCompleted": ""
     },
     {
-      "id": "919e5903-81ce-4ef2-8b7f-fc3040dd37ba",
-      "title": "To Do 2",
+      "id": "401088eb-25b4-4001-8724-3225088d4611",
+      "title": "John's To Do 2",
       "description": "Do this other thing",
-      "author": "Kevin",
-      "dateCreated": "10/29/2022, 4:43:56 PM",
+      "author": "john@test.test",
+      "dateCreated": "10/30/2022, 2:14:23 PM",
+      "complete": true,
+      "dateCompleted": "10/30/2022, 2:15:27 PM"
+    },
+    {
+      "id": "69716de2-46ce-46ab-83a7-26cf02b80627",
+      "title": "To Do 3 (copy)",
+      "description": "Test 3",
+      "author": "john@test.test",
+      "dateCreated": "10/30/2022, 2:14:33 PM",
       "complete": false,
       "dateCompleted": ""
     }
   ],
-  "users": []
+  "users": [
+    {
+      "email": "kevin@test.test",
+      "password": "$2a$10$IOPd1l8WMx19/4XZSZ.6I.Q/qPLOOljVrnsF9ntaE9y8x1Iu3bXdm",
+      "id": 1
+    },
+    {
+      "email": "john@test.test",
+      "password": "$2a$10$0j7kGKYDowd7E7qK4lCIVeS/EGzDtipsyAlYNGnG9Do5wbigqJQ4O",
+      "id": 2
+    }
+  ]
 }
