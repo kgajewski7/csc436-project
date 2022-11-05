@@ -1,5 +1,4 @@
-import { useContext } from 'react'
-import { v4 as uuidv4 } from "uuid";
+import { useContext, useState, useEffect } from 'react'
 import { useResource } from 'react-request-hook';
 import Accordion from 'react-bootstrap/Accordion';
 
@@ -9,24 +8,29 @@ export default
 function Todo ({ id, title, description, author, dateCreated, complete, dateCompleted}) {
 
     const { state, dispatch } = useContext(StateContext);
+    const [ error, setError ] = useState(false);
 
-    const [ dupTodo , duplicateTodo ] = useResource(({ id, title, description, author, dateCreated, complete, dateCompleted }) => ({
+    // Create duplicate todo on the backend
+    const [ dupTodo , duplicateTodo ] = useResource(({ title, description, author, dateCreated, complete, dateCompleted }) => ({
         url: '/todos',
         method: 'post',
-        data: { id, title, description, author, dateCreated, complete, dateCompleted }
+        data: { title, description, author, dateCreated, complete, dateCompleted }
     }))
 
+    // Delete todo on the backend
     const [ delTodo , deleteTodo ] = useResource(({ id }) => ({
         url: `/todos/${id}`,
         method: 'delete'
     }))
 
+    // Update todo on the backend to complete/not complete
     const [ compTodo , completeTodo ] = useResource(({ id, complete, dateCompleted }) => ({
         url: `/todos/${id}`,
         method: 'patch',
         data: { complete, dateCompleted }
     }))
 
+    // Completing a todo function
     function handleComplete () {
         const d = (!complete===true ? new Date(Date.now()).toLocaleString() : '');
         completeTodo({
@@ -34,38 +38,25 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
             complete: !complete,
             dateCompleted: d
         });
-        dispatch({ 
-            type: 'TOGGLE_TODO', 
-            id,
-            complete: !complete,
-            dateCompleted: d
-        });
     }
 
-    function handleDuplicate () {
-        const i = uuidv4();
-        const d = new Date(Date.now()).toLocaleString();
-        duplicateTodo({ 
-            id: i,
-            title: title.concat(' ','(copy)'),  
-            description, 
-            author: state.user,
-            dateCreated:  d,
-            complete: false,
-            dateCompleted: ''
-        });
-        dispatch({ 
-            type: 'CREATE_TODO', 
-            id: i,
-            title: title.concat(' ','(copy)'), 
-            description, 
-            author: state.user,
-            dateCreated:  d,
-            complete: false,
-            dateCompleted: ''
-        });
-    }
+    // Check if backend successfully updated todo and then dispatch
+    useEffect(() => {
+        if (compTodo?.error) {
+          setError(true);
+          //alert("Something went wrong with the check box.");
+        }
+        if (compTodo?.isLoading === false && compTodo?.data) {
+          dispatch({
+            type: "TOGGLE_TODO",
+            id: compTodo.data.id,
+            complete: compTodo.data.complete,
+            dateCompleted: compTodo.data.dateCompleted
+          });
+        }
+      }, [compTodo]);
 
+    // Deleting a todo function
     function handleDelete () {
         deleteTodo({
             id
@@ -75,6 +66,37 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
             id
         });
     }
+
+    // Duplicating a todo function
+    function handleDuplicate () {
+        duplicateTodo({ 
+            title: title.concat(' ','(copy)'),  
+            description, 
+            author: state.user,
+            dateCreated:  new Date(Date.now()).toLocaleString(),
+            complete: false,
+            dateCompleted: ''
+        });
+    }
+    // Check if backend successfully created duplicate todo and then dispatch
+    useEffect(() => {
+        if (dupTodo?.error) {
+          setError(true);
+          //alert("Something went wrong creating todo.");
+        }
+        if (dupTodo?.isLoading === false && dupTodo?.data) {
+          dispatch({
+            type: "CREATE_TODO",
+            id: dupTodo.data.id,
+            title: dupTodo.data.title, 
+            description: dupTodo.data.description,
+            author: dupTodo.data.author,
+            dateCreated:  dupTodo.data.dateCreated,
+            complete: dupTodo.data.complete,
+            dateCompleted: dupTodo.data.dateCompleted
+          });
+        }
+      }, [dupTodo]);
 
     return (
         <Accordion.Item eventKey={id}>
