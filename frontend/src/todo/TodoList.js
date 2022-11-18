@@ -9,8 +9,11 @@ function TodoList () {
     const { state } = useContext(StateContext);
     const { todos } = state;
     return (
-        <Accordion alwaysOpen>
-            {todos.map((t, i) => <Todo {...t} key={t.id} />)}
-        </Accordion>
+        <div>
+            {state.user && todos.length === 0 && <h2>No todos found.</h2>}
+            <Accordion alwaysOpen>
+                {todos.length > 0 && todos.map((t, i) => <Todo {...t} key={t._id} />)}
+            </Accordion>
+        </div>
     )
 }

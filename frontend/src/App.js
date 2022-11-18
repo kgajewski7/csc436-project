@@ -10,20 +10,23 @@ import { StateContext } from "./contexts/StateContext";
 
 function App() {
 
-  const [ state, dispatch ] = useReducer(appReducer, { user: '', todos: [] })
+  const [ state, dispatch ] = useReducer(appReducer, { user: null, todos: [] })
 
   const [ todos, getTodos ] = useResource(() => ({
-    url: '/todos',
-    method: 'get'
-  }))
-
-  useEffect(getTodos, [])
+    url: '/todo',
+    method: 'get',
+    headers: { Authorization: `${state?.user?.access_token}` }
+  }));
 
   useEffect(() => {
-    if (todos && todos.data) {
-      dispatch({ type: 'FETCH_TODOS', todos: todos.data.reverse() })
+    getTodos();
+  }, [state?.user?.access_token]);
+
+  useEffect(() => {
+    if (todos && todos.isLoading === false && todos.data) {
+      dispatch({ type: "FETCH_TODOS", todos: todos.data.todos.reverse() });
     }
-  }, [todos])
+  }, [todos]);
 
   return (
     <div>

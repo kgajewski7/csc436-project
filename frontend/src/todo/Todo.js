@@ -8,27 +8,27 @@ export default
 function Todo ({ id, title, description, author, dateCreated, complete, dateCompleted}) {
 
     const { state, dispatch } = useContext(StateContext);
-    const [ error, setError ] = useState(false);
 
     // Create duplicate todo on the backend
-    const [ dupTodo , duplicateTodo ] = useResource(({ title, description, author, dateCreated, complete, dateCompleted }) => ({
-        url: '/todos',
+    const [ dupTodo , duplicateTodo ] = useResource(({ title, description, dateCreated, complete, dateCompleted }) => ({
+        url: '/todo',
         method: 'post',
-        data: { title, description, author, dateCreated, complete, dateCompleted }
-    }))
+        headers: {"Authorization": `${state.user.access_token}`},
+        data: { title, description, dateCreated, complete, dateCompleted }
+    }));
 
     // Delete todo on the backend
     const [ delTodo , deleteTodo ] = useResource(({ id }) => ({
         url: `/todos/${id}`,
         method: 'delete'
-    }))
+    }));
 
     // Update todo on the backend to complete/not complete
     const [ compTodo , completeTodo ] = useResource(({ id, complete, dateCompleted }) => ({
         url: `/todos/${id}`,
         method: 'patch',
         data: { complete, dateCompleted }
-    }))
+    }));
 
     // Completing a todo function
     function handleComplete () {
@@ -43,7 +43,7 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
     // Check if backend successfully updated todo and then dispatch
     useEffect(() => {
         if (compTodo?.error) {
-          setError(true);
+          //setError(true);
           //alert("Something went wrong with the check box.");
         }
         if (compTodo?.isLoading === false && compTodo?.data) {
@@ -72,7 +72,6 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
         duplicateTodo({ 
             title: title.concat(' ','(copy)'),  
             description, 
-            author: state.user,
             dateCreated:  new Date(Date.now()).toLocaleString(),
             complete: false,
             dateCompleted: ''
@@ -80,23 +79,19 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
     }
     // Check if backend successfully created duplicate todo and then dispatch
     useEffect(() => {
-        if (dupTodo?.error) {
-          setError(true);
-          //alert("Something went wrong creating todo.");
-        }
-        if (dupTodo?.isLoading === false && dupTodo?.data) {
+        if (dupTodo.isLoading === false && dupTodo.data) {
           dispatch({
             type: "CREATE_TODO",
             id: dupTodo.data.id,
             title: dupTodo.data.title, 
             description: dupTodo.data.description,
-            author: dupTodo.data.author,
+            author: state.user.username,
             dateCreated:  dupTodo.data.dateCreated,
             complete: dupTodo.data.complete,
             dateCompleted: dupTodo.data.dateCompleted
           });
         }
-      }, [dupTodo]);
+    }, [dupTodo]);
 
     return (
         <Accordion.Item eventKey={id}>
@@ -104,7 +99,7 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
             <Accordion.Body>
                 <div>{description}</div>
                 <br />
-                <i>Created by <b>{author}</b> on {dateCreated}</i>
+                <i>Created by <b>{state.user.username}</b> on {dateCreated}</i>
                 <br />
                 Completed? <input type="checkbox" checked={complete} onChange={handleComplete} id="complete" name="complete"></input> Date Completed: {dateCompleted}
                 <br />

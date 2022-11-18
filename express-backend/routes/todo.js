@@ -2,9 +2,9 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const Todo = require("../models/Todo");
 
-const privateKey = process.env.JWT_PRIVATE_KEY;
-
 const router = express.Router();
+
+const privateKey = process.env.JWT_PRIVATE_KEY;
 
 router.use(function (req, res, next) {
     if (req.header("Authorization")) {
@@ -21,7 +21,7 @@ router.use(function (req, res, next) {
     next();
 });
 
-router.post("/", async function (req, res) {
+router.post("/", async function (req, res, next) {
     const todo = new Todo({
         title: req.body.title,
         description: req.body.description,
@@ -30,11 +30,11 @@ router.post("/", async function (req, res) {
         complete: req.body.complete,
         dateCompleted: req.body.dateCompleted
     });
-    return await todo
+    return todo
         .save()
         .then((savedTodo) => {
             return res.status(201).json({
-                id: savedTodo._id,
+                _id: savedTodo._id,
                 title: savedTodo.title,
                 description: savedTodo.description,
                 author: savedTodo.author,
@@ -44,7 +44,7 @@ router.post("/", async function (req, res) {
             });
         })
         .catch((error) => {
-            return res.status(500).json({ error: "Something went wrong." });
+            return res.status(500).json({ error: "Something went wrong creating the todo." });
         });
 });
 
