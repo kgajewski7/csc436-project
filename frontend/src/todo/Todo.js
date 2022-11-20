@@ -1,11 +1,11 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useResource } from 'react-request-hook';
 import Accordion from 'react-bootstrap/Accordion';
 
 import { StateContext } from "../contexts/StateContext";
 
 export default 
-function Todo ({ id, title, description, author, dateCreated, complete, dateCompleted}) {
+function Todo ({ _id, title, description, author_name, dateCreated, complete, dateCompleted}) {
 
     const { state, dispatch } = useContext(StateContext);
 
@@ -18,15 +18,17 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
     }));
 
     // Delete todo on the backend
-    const [ delTodo , deleteTodo ] = useResource(({ id }) => ({
-        url: `/todos/${id}`,
-        method: 'delete'
+    const [ delTodo , deleteTodo ] = useResource(({ _id }) => ({
+        url: `/todo/${_id}`,
+        method: 'delete',
+        headers: {"Authorization": `${state.user.access_token}`}
     }));
 
     // Update todo on the backend to complete/not complete
-    const [ compTodo , completeTodo ] = useResource(({ id, complete, dateCompleted }) => ({
-        url: `/todos/${id}`,
+    const [ compTodo , completeTodo ] = useResource(({ _id, complete, dateCompleted }) => ({
+        url: `/todo/${_id}`,
         method: 'patch',
+        headers: {"Authorization": `${state.user.access_token}`},
         data: { complete, dateCompleted }
     }));
 
@@ -34,7 +36,7 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
     function handleComplete () {
         const d = (!complete===true ? new Date(Date.now()).toLocaleString() : '');
         completeTodo({
-            id,
+            _id,
             complete: !complete,
             dateCompleted: d
         });
@@ -42,14 +44,10 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
 
     // Check if backend successfully updated todo and then dispatch
     useEffect(() => {
-        if (compTodo?.error) {
-          //setError(true);
-          //alert("Something went wrong with the check box.");
-        }
-        if (compTodo?.isLoading === false && compTodo?.data) {
+        if (compTodo.isLoading === false && compTodo.data) {
           dispatch({
             type: "TOGGLE_TODO",
-            id: compTodo.data.id,
+            _id: compTodo.data._id,
             complete: compTodo.data.complete,
             dateCompleted: compTodo.data.dateCompleted
           });
@@ -59,11 +57,11 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
     // Deleting a todo function
     function handleDelete () {
         deleteTodo({
-            id
+            _id
         });
         dispatch({ 
             type: 'DELETE_TODO', 
-            id
+            _id
         });
     }
 
@@ -80,26 +78,26 @@ function Todo ({ id, title, description, author, dateCreated, complete, dateComp
     // Check if backend successfully created duplicate todo and then dispatch
     useEffect(() => {
         if (dupTodo.isLoading === false && dupTodo.data) {
-          dispatch({
-            type: "CREATE_TODO",
-            id: dupTodo.data.id,
-            title: dupTodo.data.title, 
-            description: dupTodo.data.description,
-            author: state.user.username,
-            dateCreated:  dupTodo.data.dateCreated,
-            complete: dupTodo.data.complete,
-            dateCompleted: dupTodo.data.dateCompleted
-          });
+            dispatch({
+                type: "CREATE_TODO",
+                _id: dupTodo.data._id,
+                title: dupTodo.data.title, 
+                description: dupTodo.data.description,
+                author_name: dupTodo.data.author_name,
+                dateCreated:  dupTodo.data.dateCreated,
+                complete: dupTodo.data.complete,
+                dateCompleted: dupTodo.data.dateCompleted
+            });
         }
     }, [dupTodo]);
 
     return (
-        <Accordion.Item eventKey={id}>
+        <Accordion.Item eventKey={_id}>
             <Accordion.Header>{title}</Accordion.Header>
             <Accordion.Body>
                 <div>{description}</div>
                 <br />
-                <i>Created by <b>{state.user.username}</b> on {dateCreated}</i>
+                <i>Created by <b>{author_name}</b> on {dateCreated}</i>
                 <br />
                 Completed? <input type="checkbox" checked={complete} onChange={handleComplete} id="complete" name="complete"></input> Date Completed: {dateCompleted}
                 <br />

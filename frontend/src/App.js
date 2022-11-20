@@ -19,7 +19,12 @@ function App() {
   }));
 
   useEffect(() => {
-    getTodos();
+    if(state?.user) {
+      getTodos();
+    }
+    else {
+      dispatch({ type: 'CLEAR_TODOS' })
+    }
   }, [state?.user?.access_token]);
 
   useEffect(() => {

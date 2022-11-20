@@ -38,10 +38,10 @@ function CreateTodo () {
         if (todo.isLoading === false && todo.data) {
             dispatch({
                 type: "CREATE_TODO",
-                id: todo.data._id,
+                _id: todo.data._id,
                 title: todo.data.title, 
                 description: todo.data.description,
-                author: user.username,
+                author_name: todo.data.author_name,
                 dateCreated:  todo.data.dateCreated,
                 complete: todo.data.complete,
                 dateCompleted: todo.data.dateCompleted

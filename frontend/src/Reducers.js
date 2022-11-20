@@ -17,10 +17,10 @@ function userReducer(state, action) {
     switch (action.type) {
       case "CREATE_TODO":
         const newTodo = {
-          id: action.id,
+          _id: action._id,
           title: action.title,
           description: action.description,
-          author: action.author,
+          author_name: action.author_name,
           dateCreated: action.dateCreated,
           complete: action.complete,
           dateCompleted: action.dateCompleted
@@ -30,13 +30,13 @@ function userReducer(state, action) {
         return action.todos;
       case "TOGGLE_TODO":
         return state.map((todo) => {
-          if(todo.id === action.id) {
+          if(todo._id === action._id) {
             return {...todo, complete: action.complete, dateCompleted: action.dateCompleted}
           }
           else {return todo}
         })
       case "DELETE_TODO":
-        return state.filter((todo) => todo.id !== action.id);
+        return state.filter((todo) => todo._id !== action._id);
       case "CLEAR_TODOS":
         return [];
       default:
