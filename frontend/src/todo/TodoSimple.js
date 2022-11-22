@@ -1,14 +1,15 @@
 import { useContext, useEffect } from 'react'
 import { useResource } from 'react-request-hook';
-import Accordion from 'react-bootstrap/Accordion';
-import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
 import { StateContext } from "../contexts/StateContext";
 
 export default 
-function Todo ({ _id, title, description, author_name, dateCreated, complete, dateCompleted}) {
+function TodoSimple ({ _id, title, description, author_name, dateCreated, complete, dateCompleted}) {
 
     const { state, dispatch } = useContext(StateContext);
+
+    const navigate = useNavigate();
 
     // Create duplicate todo on the backend
     const [ dupTodo , duplicateTodo ] = useResource(({ title, description, dateCreated, complete, dateCompleted }) => ({
@@ -52,6 +53,8 @@ function Todo ({ _id, title, description, author_name, dateCreated, complete, da
             complete: compTodo.data.complete,
             dateCompleted: compTodo.data.dateCompleted
           });
+          // Not the best user experience, should toggle without redirecting to the list, but for now it works like this because it would need a new reducer setup
+          navigate(`/`);
         }
       }, [compTodo]);
 
@@ -64,6 +67,7 @@ function Todo ({ _id, title, description, author_name, dateCreated, complete, da
             type: 'DELETE_TODO', 
             _id
         });
+        navigate(`/`);
     }
 
     // Duplicating a todo function
@@ -89,30 +93,27 @@ function Todo ({ _id, title, description, author_name, dateCreated, complete, da
                 complete: dupTodo.data.complete,
                 dateCompleted: dupTodo.data.dateCompleted
             });
+            navigate(`/`);
         }
     }, [dupTodo]);
 
     return (
-        <Accordion.Item eventKey={_id}>
-            <Accordion.Header>
-                <Link to={`/todo/${_id}`}><h3 style={{color: 'black'}}>{title}</h3></Link>
-            </Accordion.Header>
-            <Accordion.Body>
-                <div>{description}</div>
-                <br />
-                <i>Created by <b>{author_name}</b> on {dateCreated}</i>
-                <br />
-                Completed? <input type="checkbox" checked={complete} onChange={handleComplete} id="complete" name="complete"></input> Date Completed: {dateCompleted}
-                <br />
-                <div>
-                    <form onSubmit={e => {e.preventDefault(); handleDuplicate();}} style={{display: 'inline'}}>
-                        <input type="submit" value="Duplicate" style={{display: 'inline'}} disabled={!state.user}/>
-                    </form>
-                    <form onSubmit={e => {e.preventDefault(); handleDelete();}} style={{display: 'inline'}}>
-                        <input type="submit" value="Delete" style={{display: 'inline'}}/>
-                    </form>
-                </div>
-            </Accordion.Body>
-        </Accordion.Item>
+       <div>
+            <h3 style={{color: 'black'}}>{title}</h3>
+            <div>{description}</div>
+            <br />
+            <i>Created by <b>{author_name}</b> on {dateCreated}</i>
+            <br />
+            Completed? <input type="checkbox" checked={complete} onChange={handleComplete} id="complete" name="complete"></input> Date Completed: {dateCompleted}
+            <br />
+            <div>
+                <form onSubmit={e => {e.preventDefault(); handleDuplicate();}} style={{display: 'inline'}}>
+                    <input type="submit" value="Duplicate" style={{display: 'inline'}} disabled={!state.user}/>
+                </form>
+                <form onSubmit={e => {e.preventDefault(); handleDelete();}} style={{display: 'inline'}}>
+                    <input type="submit" value="Delete" style={{display: 'inline'}}/>
+                </form>
+            </div>
+        </div>
     )
 }

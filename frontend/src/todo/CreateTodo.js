@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from 'react'
 import { useResource } from "react-request-hook"
+import { useNavigate } from "react-router-dom";
 
 import { StateContext } from "../contexts/StateContext";
 
@@ -11,6 +12,8 @@ function CreateTodo () {
 
     const [ title, setTitle ] = useState('')
     const [ description, setDescription ] = useState('')
+
+    const navigate = useNavigate();
 
     // Create new todo on the backend
     const [todo , createTodo ] = useResource(({ title, description, dateCreated, complete, dateCompleted }) => ({
@@ -46,9 +49,10 @@ function CreateTodo () {
                 complete: todo.data.complete,
                 dateCompleted: todo.data.dateCompleted
             });
+            navigate(`/`);
         }
     }, [todo]);
-
+        
     return (
         <form onSubmit={e => {
                 e.preventDefault(); 
