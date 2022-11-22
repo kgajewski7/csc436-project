@@ -1,10 +1,8 @@
-import { useState, useContext, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useResource } from 'react-request-hook';
-import { StateContext } from "../contexts/StateContext";
 
 export default 
 function Register({close}) {
-    const { dispatch } = useContext(StateContext);
 
     const [ username, setUsername ] = useState('')
     const [ password, setPassword ] = useState('')
@@ -30,18 +28,6 @@ function Register({close}) {
             }
         }
     }, [user]);
-        
-    // useEffect(() => {
-    //     if (user && user.data) {
-    //         setRegisterFailed(false);
-    //         dispatch({ type: 'REGISTER', username: user.data.user.email });
-    //         close();
-    //     }
-    //     if (user?.error) {
-    //         console.log(user?.error);
-    //         setRegisterFailed(true);
-    //     }
-    // }, [user])
 
     return (
         <div>

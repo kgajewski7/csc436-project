@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { StateContext } from "../contexts/StateContext";
 
+// Todo version without accordion from bootstrap
 export default 
 function TodoSimple ({ _id, title, description, author_name, dateCreated, complete, dateCompleted}) {
 

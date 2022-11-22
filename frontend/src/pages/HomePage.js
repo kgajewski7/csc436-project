@@ -13,7 +13,7 @@ export default function HomePage() {
     }));
 
     useEffect(() => {
-        if(state?.user?.username) {
+        if(state?.user) {
             getTodos();
             document.title = `${state.user.username}’s Todo List`;
         }
